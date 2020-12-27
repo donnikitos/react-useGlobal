@@ -2,38 +2,40 @@ import React from 'react';
 
 
 const superGlobal = {
-	set update($value) {
-		this.data = {
-			...this.data,
-			...$value
-		};
-
-		for(const sub of this.subscribers) {
-			const data = (sub[1] ? this.data[(sub[1])] : this.data);
-
-			sub[0](data);
-		}
-	},
 	data: {},
-	subscribers: []
+	updater: {}
 };
 
-function useGlobal($name = null) {
-	const [state, setState] = React.useState(false);
+function useGlobal($name, $value = undefined) {
+	const [state, setState] = React.useState(() => {
+		if(superGlobal.data[$name] == undefined && $value != undefined)
+			superGlobal.data[$name] = $value;
+
+		return superGlobal.data[$name];
+	});
+
 
 	React.useEffect(() => {
-		superGlobal.subscribers.push([
-			setState,
-			$name
-		]);
+		if(state != superGlobal.data[$name])
+			setState(superGlobal.data[$name]);
+
+		if(!superGlobal.updater[$name])
+			superGlobal.updater[$name] = [];
+
+		superGlobal.updater[$name].push(setState);
 	}, []);
+
+	function updater($input) {
+		superGlobal.data[$name] = $input;
+
+		for(const i in superGlobal.updater[$name])
+			superGlobal.updater[$name][i](superGlobal.data[$name]);
+	}
 
 
 	return [
 		state,
-		($input) => {
-			superGlobal.update = ($name ? { [$name]: $input } : $input);
-		}
+		updater
 	];
 }
 export default useGlobal;
