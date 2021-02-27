@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./",
+		"target": "ES2015",
+		"module": "ES2015",
+		"moduleResolution": "Node",
+		"declaration": true,
+		"noImplicitAny": false,
+		"noEmitOnError": true,
+		"removeComments": true,
+		"sourceMap": false,
+		"strict": true,
+		"outDir": "."
+	},
+	"include": ["src/index.ts"],
+	"exclude": ["node_modules", "dist"]
+}

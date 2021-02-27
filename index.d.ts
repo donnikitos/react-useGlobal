@@ -1,2 +1,2 @@
-declare function useGlobal(varName: string, initValue?: any): [getValue: any, (newValue: any) => void];
+declare function useGlobal<T extends any>($name: string, $value?: T): (T | (($input: T) => void))[];
 export default useGlobal;
