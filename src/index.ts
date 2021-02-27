@@ -5,7 +5,7 @@ const superGlobal = {
 	updater: {},
 };
 
-function useGlobal<T extends any>($name: string, $value: T = undefined!) {
+function useGlobal<T extends any>($name: string, $value: T = undefined!): [T, (input: T) => void] {
 	const [state, setState] = useState<T>(() => {
 		if (superGlobal.data[$name] === undefined && $value !== undefined)
 			superGlobal.data[$name] = $value;

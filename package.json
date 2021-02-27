@@ -1,6 +1,6 @@
 {
 	"name": "@donnikitos/react-useglobal",
-	"version": "1.0.5",
+	"version": "1.0.7",
 	"description": "A convinient Rect.js hook to use global variables in unconnected components",
 	"main": "index.js",
 	"types": "index.d.ts",
