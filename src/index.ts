@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { v4 as uuid } from 'uuid';
 
 const superGlobal = {
 	data: {},
 	updater: {},
 };
 
-function useGlobal<T extends any>($name: string, $value: T = undefined!): [T, (input: T) => void] {
+function useGlobal<T extends any>($name: string, $value: T = undefined!) {
 	const [state, setState] = useState<T>(() => {
 		if (superGlobal.data[$name] === undefined && $value !== undefined)
 			superGlobal.data[$name] = $value;
@@ -14,20 +15,31 @@ function useGlobal<T extends any>($name: string, $value: T = undefined!): [T, (i
 	});
 
 	useEffect(() => {
+		const id = uuid();
+
 		if (state != superGlobal.data[$name]) setState(superGlobal.data[$name]);
 
-		if (!superGlobal.updater[$name]) superGlobal.updater[$name] = [];
+		if (!superGlobal.updater[$name]) superGlobal.updater[$name] = {};
 
-		superGlobal.updater[$name].push(setState);
+		superGlobal.updater[$name][id] = setState;
+
+		return () => {
+			delete superGlobal.updater[$name][id];
+
+			if(Object.keys(superGlobal.updater[$name]).length <= 0)
+				delete superGlobal.updater[$name];
+		};
 	}, []);
 
-	function updater($input: T) {
+	function updater(
+		$input: Parameters<typeof setState>[0],
+	) {
 		superGlobal.data[$name] = $input;
 
 		for (const i in superGlobal.updater[$name])
 			superGlobal.updater[$name][i](superGlobal.data[$name]);
 	}
 
-	return [state, updater];
+	return [state, updater] as [typeof state, typeof updater];
 }
 export default useGlobal;
