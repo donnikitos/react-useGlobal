@@ -24,9 +24,9 @@ function useGlobal($name, $value = undefined) {
         };
     }, []);
     function updater($input) {
-        superGlobal.data[$name] = $input;
         for (const i in superGlobal.updater[$name])
-            superGlobal.updater[$name][i](superGlobal.data[$name]);
+            superGlobal.updater[$name][i]($input);
+        superGlobal.data[$name] = state;
     }
     return [state, updater];
 }

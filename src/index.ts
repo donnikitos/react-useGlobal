@@ -34,10 +34,10 @@ function useGlobal<T extends any>($name: string, $value: T = undefined!) {
 	function updater(
 		$input: Parameters<typeof setState>[0],
 	) {
-		superGlobal.data[$name] = $input;
-
 		for (const i in superGlobal.updater[$name])
-			superGlobal.updater[$name][i](superGlobal.data[$name]);
+			superGlobal.updater[$name][i]($input);
+
+		superGlobal.data[$name] = state;
 	}
 
 	return [state, updater] as [typeof state, typeof updater];
